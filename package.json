@@ -1,5 +1,8 @@
 {
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.2",
     "agentation": "^3.0.2"
-  }
+  },
+  "scripts": {}
 }
