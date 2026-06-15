@@ -152,6 +152,17 @@ app.use('/api/earnings', earningsRoutes);
 app.use('/api/store-settings', storeSettingsRoutes);
 app.use('/api/fund-requests', fundRequestRoutes);
 
+// Serve Frontend Static Files
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Fallback routing for React/Vite single-page application
+app.get('*', (req, res, next) => {
+  if (!req.url.startsWith('/api')) {
+    return res.sendFile(path.join(__dirname, '../dist/index.html'));
+  }
+  next();
+});
+
 // 404 handler
 app.use((_req, res) => {
   res.status(404).json({ message: 'Route not found.' });
