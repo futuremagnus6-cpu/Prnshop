@@ -1,8 +1,8 @@
 {
-  "devDependencies": {
-    "@playwright/test": "^1.60.0",
-    "@types/node": "^25.9.2",
-    "agentation": "^3.0.2"
-  },
-  "scripts": {}
+  "name": "pranndhara-root",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build && cd ../backend && cp -r ../frontend/dist ./dist",
+    "start": "cd backend && node src/server.js"
+  }
 }
