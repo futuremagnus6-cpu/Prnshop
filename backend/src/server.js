@@ -1,3 +1,6 @@
+// Force Node.js to use public DNS servers instead of your blocked ISP/local DNS
+require('node:dns/promises').setServers(['8.8.8.8', '1.1.1.1']);
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -44,12 +47,12 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", 'https://checkout.razorpay.com'],
-        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-        imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com', 'https://*.cloudinary.com'],
-        connectSrc: ["'self'", 'https://api.razorpay.com'],
-        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-        frameSrc: ["'self'", 'https://api.razorpay.com'],
+        scriptSrc: ["'self'", "'unsafe-inline'", 'https://razorpay.com'],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://googleapis.com'],
+        imgSrc: ["'self'", 'data:', 'https://cloudinary.com', 'https://*.cloudinary.com'],
+        connectSrc: ["'self'", 'https://razorpay.com'],
+        fontSrc: ["'self'", 'https://gstatic.com'],
+        frameSrc: ["'self'", 'https://razorpay.com'],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],
       },
