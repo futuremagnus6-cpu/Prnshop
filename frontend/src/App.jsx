@@ -5,7 +5,6 @@ import { fetchProfile } from './store/slices/authSlice';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
-import { Agentation } from 'agentation';
 
 
 // Lazy-loaded page components for code splitting
@@ -61,7 +60,7 @@ const App = () => {
 
   return (
     <Suspense fallback={<PageFallback />}>
-       <Agentation />
+       
       <Routes>
         <Route element={<Layout />}>
           {/* Public routes */}
