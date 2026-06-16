@@ -156,7 +156,8 @@ app.use('/api/fund-requests', fundRequestRoutes);
 app.use(express.static(path.join(__dirname, '../dist')));
 
 // Fallback routing for React/Vite single-page application
-app.get( (req, res, next) => {
+// Fallback routing for React/Vite single-page application
+app.use((req, res, next) => {
   if (!req.url.startsWith('/api')) {
     return res.sendFile(path.join(__dirname, '../dist/index.html'));
   }
