@@ -60,12 +60,13 @@ app.use(
   })
 );
 
-app.use(
-  cors({
-    origin: config.clientUrl,
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://pranndhara-1.onrender.com'
+  ],
+  credentials: true
+}));
 
 // Rate limiting
 const generalLimiter = rateLimit({
