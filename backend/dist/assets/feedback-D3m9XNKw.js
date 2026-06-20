@@ -1,1 +1,0 @@
-import{an as t}from"./index-1fPaIEG3.js";const c={create:e=>t.post("/feedback",e).then(a=>a.data),getAll:e=>t.get("/feedback",{params:e}).then(a=>a.data),markRead:e=>t.put(`/feedback/${e}/read`).then(a=>a.data),delete:e=>t.delete(`/feedback/${e}`).then(a=>a.data)};export{c as f};

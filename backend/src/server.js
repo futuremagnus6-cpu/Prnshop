@@ -63,7 +63,7 @@ app.use(
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://pranndhara-1.onrender.com'
+    'https://sandybrown-owl-905368.hostingersite.com'
   ],
   credentials: true
 }));
