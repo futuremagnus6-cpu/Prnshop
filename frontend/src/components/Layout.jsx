@@ -23,6 +23,7 @@ const Layout = () => {
   const location = useLocation();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [adminSidebarOpen, setAdminSidebarOpen] = useState(false);
   const [alerts, setAlerts] = useState({ unreadCount: 0, items: [] });
   const [showAlerts, setShowAlerts] = useState(false);
   const alertRef = useRef(null);
@@ -446,27 +447,66 @@ const Layout = () => {
 
       {/* Admin Sidebar for admin pages */}
       {isAuthenticated && (user?.role === 'admin' || user?.role === 'superadmin' || user?.role === 'manager') && location.pathname.startsWith('/admin') && (
-        <div className="flex">
-          <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-gray-200 min-h-[calc(100vh-4rem)] p-4">
+        <div className="flex min-h-[calc(100vh-4rem)]">
+          {/* Mobile sidebar toggle - visible below lg */}
+          <div className="lg:hidden fixed bottom-4 left-4 z-40">
+            <button
+              onClick={() => setAdminSidebarOpen(true)}
+              className="flex items-center gap-2 bg-emerald-600 text-white rounded-full px-4 py-3 shadow-lg hover:bg-emerald-700 transition-colors"
+              aria-label="Open admin menu"
+            >
+              <FiMenu className="w-5 h-5" />
+              <span className="text-sm font-medium">Menu</span>
+            </button>
+          </div>
+
+          {/* Backdrop overlay for mobile */}
+          {adminSidebarOpen && (
+            <div
+              className="lg:hidden fixed inset-0 bg-black/50 z-40"
+              onClick={() => setAdminSidebarOpen(false)}
+            />
+          )}
+
+          {/* Sidebar - desktop always visible, mobile as overlay */}
+          <aside
+            className={`fixed lg:static inset-y-0 left-0 z-50 lg:z-auto flex flex-col w-64 bg-white dark:bg-[#1e293b] border-r border-gray-200 dark:border-[#334155] min-h-[calc(100vh-4rem)] p-4 transition-transform duration-300 ease-in-out ${
+              adminSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+            }`}
+          >
+            {/* Close button on mobile */}
+            <div className="flex items-center justify-between mb-2 lg:hidden">
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Navigation</span>
+              <button
+                onClick={() => setAdminSidebarOpen(false)}
+                className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                aria-label="Close menu"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+
             <div className="space-y-1">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">Management</p>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2 hidden lg:block">Management</p>
               {adminLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
+                  onClick={() => setAdminSidebarOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     location.pathname === link.to
-                      ? 'bg-emerald-50 text-emerald-700'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-white'
                   }`}
                 >
-                  <link.icon className="w-4 h-4" />
+                  <link.icon className="w-4 h-4 shrink-0" />
                   {link.label}
                 </Link>
               ))}
             </div>
           </aside>
-          <main className="flex-1">
+
+          <main className="flex-1 min-w-0">
             <Outlet />
           </main>
         </div>
