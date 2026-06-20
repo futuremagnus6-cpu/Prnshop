@@ -1,0 +1,1 @@
+import{an as a}from"./index-1fPaIEG3.js";const r={getAll:e=>a.get("/dealers",{params:e}).then(t=>t.data),getById:e=>a.get(`/dealers/${e}`).then(t=>t.data),create:e=>a.post("/dealers",e).then(t=>t.data),update:(e,t)=>a.put(`/dealers/${e}`,t).then(d=>d.data),delete:e=>a.delete(`/dealers/${e}`).then(t=>t.data)};export{r as d};
