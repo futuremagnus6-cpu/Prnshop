@@ -1,15 +1,13 @@
 const dotenv = require('dotenv');
 const path = require('path');
 
-// Only load .env file in development, not in production
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
-}
+// Try to load .env file if it exists (for local development)
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const config = {
-  port: parseInt(process.env.PORT, 10) || 5000,
-  mongodbUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/newshop20123',
-  jwtSecret: process.env.JWT_SECRET || 'fallback_secret_change_me_in_production',
+  port: parseInt(process.env.PORT, 10) || 8080,
+  mongodbUri: process.env.MONGODB_URI,
+  jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   email: {
     host: process.env.EMAIL_HOST || 'smtp.gmail.com',
