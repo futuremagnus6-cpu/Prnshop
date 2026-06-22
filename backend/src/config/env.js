@@ -1,7 +1,10 @@
 const dotenv = require('dotenv');
 const path = require('path');
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// Only load .env file in development, not in production
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+}
 
 const config = {
   port: parseInt(process.env.PORT, 10) || 5000,
