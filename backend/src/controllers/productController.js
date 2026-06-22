@@ -89,7 +89,7 @@ const createProduct = async (req, res, next) => {
     // Parse image URLs from JSON string
     if (typeof productData.images === 'string') {
       try {
-        productData.images = JSON.parse(productData.images);
+        productData.images = JSON.parse(productData.images || '[]');
       } catch {
         productData.images = productData.images ? [productData.images] : [];
       }
@@ -154,7 +154,7 @@ const updateProduct = async (req, res, next) => {
     // Parse image URLs from JSON string
     if (typeof updateData.images === 'string') {
       try {
-        updateData.images = JSON.parse(updateData.images);
+        updateData.images = JSON.parse(updateData.images || '[]');
       } catch {
         updateData.images = updateData.images ? [updateData.images] : [];
       }

@@ -46,7 +46,7 @@ const importProducts = async (req, res, next) => {
           gst: parseFloat(r.gst || r.GST || r.tax || r.Tax || 0),
         }));
       } else if (ext === '.json') {
-        const data = JSON.parse(content);
+        const data = JSON.parse(content || '[]');
         const items = Array.isArray(data) ? data : data.products || data.items || data.data || [];
         externalProducts = items.map((r) => ({
           name: r.name || r.product_name || r.title || '',
@@ -226,7 +226,7 @@ const importProducts = async (req, res, next) => {
       } else {
         // Try to parse JSON string
         try {
-          const parsed = JSON.parse(rawData);
+          const parsed = JSON.parse(rawData || '[]');
           const items = Array.isArray(parsed) ? parsed : parsed.products || parsed.items || parsed.data || [];
           externalProducts = items.map((r) => ({
             name: r.name || r.product_name || r.title || '',
