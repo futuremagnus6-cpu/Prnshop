@@ -1,8 +1,11 @@
 const dotenv = require('dotenv');
 const path = require('path');
 
-// Try to load .env file if it exists (for local development)
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// Only load .env file if it exists
+const envPath = path.resolve(__dirname, '../../.env');
+if (require('fs').existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+}
 
 const config = {
   port: parseInt(process.env.PORT, 10) || 8080,
