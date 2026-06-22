@@ -63,7 +63,7 @@ const BlogList = () => {
       if (filterType !== 'all') params.type = filterType;
       if (search) params.search = search;
       const data = await blogApi.getAll(params);
-      setBlogs(data.blogs);
+      setBlogs(data.blogs|| []);
       setVisibleBlogs([]);
     } catch {
       // silent

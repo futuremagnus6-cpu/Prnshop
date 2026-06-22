@@ -34,8 +34,8 @@ const Shop = () => {
       if (category) params.category = category;
       if (inStock) params.inStock = inStock;
       const data = await productApi.getAll(params);
-      setProducts(data.products);
-      setPagination(data.pagination);
+      setProducts(data.products|| []);
+      setPagination(data.pagination || null);
     } catch {
       toast.error('Failed to load products');
     } finally {
@@ -46,7 +46,7 @@ const Shop = () => {
   const loadCategories = async () => {
     try {
       const data = await categoryApi.getAll();
-      setCategories(data.categories);
+      setCategories(data.categories|| []);
     } catch {}
   };
 
