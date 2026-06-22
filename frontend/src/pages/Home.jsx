@@ -518,7 +518,7 @@ const Home = () => {
       blogApi.getAll({ limit: 9 }),
     ]);
     if (sellersResult.status === 'fulfilled') {
-      setBestSellers(sellersResult.value.products);
+  setBestSellers(sellersResult.value.products || []);
     }
     if (blogsResult.status === 'fulfilled') {
       setBlogs(blogsResult.value.blogs || []);
