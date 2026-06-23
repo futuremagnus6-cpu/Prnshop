@@ -1,6 +1,7 @@
 const logger = require('../utils/logger');
 
 const errorHandler = (err, req, res, _next) => {
+   console.error('❌ ERROR:', err.name, err.message, err.stack);
   // Build structured error context
   const errorContext = {
     name: err.name,
