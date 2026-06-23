@@ -15,27 +15,16 @@ const bcrypt = require('bcryptjs');
 // @route   POST /api/auth/register
 const register = async (req, res, next) => {
   try {
-    console.log('=== REGISTER START ===');
-    console.log('Body:', JSON.stringify(req.body));
-
     const { name, email, password } = req.body;
-    console.log('Name:', name, 'Email:', email, 'Password:', password);
 
     const existingUser = await User.findOne({ email });
-    console.log('Existing user check done');
-
     if (existingUser) {
       return res.status(409).json({ message: 'Email already registered.' });
     }
 
-    console.log('Creating user...');
     const user = await User.create({ name, email, password });
-    console.log('User created:', user._id);
-
     const verificationToken = user.generateVerificationToken();
-    console.log('Verification token generated');
     await user.save();
-    console.log('User saved after verification token');
 
     sendVerificationEmail(user, verificationToken).catch((err) =>
       console.error('Failed to send verification email:', err.message)
@@ -45,7 +34,6 @@ const register = async (req, res, next) => {
     const refreshToken = generateRefreshToken();
     user.refreshToken = refreshToken;
     await user.save();
-    console.log('User saved after refresh token');
 
     res.status(201).json({
       message: 'User registered successfully. Please verify your email.',
@@ -60,13 +48,14 @@ const register = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.error('=== REGISTER ERROR ===');
-    console.error('Name:', error.name);
-    console.error('Message:', error.message);
-    console.error('Stack:', error.stack);
-    next(error);
+    // TEMPORARY DEBUG - remove after fixing
+    return res.status(500).json({
+      errorName: error.name,
+      errorMessage: error.message,
+    });
   }
 };
+
 // @desc    Login user
 // @route   POST /api/auth/login
 const login = async (req, res, next) => {
@@ -175,7 +164,6 @@ const forgotPassword = async (req, res, next) => {
       logger.error('Failed to send password reset email', { error: err.message, email: user.email })
     );
 
-    // Always return success for security (don't reveal if email exists or sending failed)
     res.json({ message: 'If that email is registered, a password reset link has been sent.' });
   } catch (error) {
     next(error);
