@@ -15,26 +15,37 @@ const bcrypt = require('bcryptjs');
 // @route   POST /api/auth/register
 const register = async (req, res, next) => {
   try {
+    console.log('=== REGISTER START ===');
+    console.log('Body:', JSON.stringify(req.body));
+
     const { name, email, password } = req.body;
+    console.log('Name:', name, 'Email:', email, 'Password:', password);
 
     const existingUser = await User.findOne({ email });
+    console.log('Existing user check done');
+
     if (existingUser) {
       return res.status(409).json({ message: 'Email already registered.' });
     }
 
+    console.log('Creating user...');
     const user = await User.create({ name, email, password });
-    const verificationToken = user.generateVerificationToken();
-    await user.save();
+    console.log('User created:', user._id);
 
-    // Send verification email (non-blocking)
+    const verificationToken = user.generateVerificationToken();
+    console.log('Verification token generated');
+    await user.save();
+    console.log('User saved after verification token');
+
     sendVerificationEmail(user, verificationToken).catch((err) =>
-      logger.error('Failed to send verification email', { error: err.message, userId: user._id })
+      console.error('Failed to send verification email:', err.message)
     );
 
     const token = generateToken(user._id);
     const refreshToken = generateRefreshToken();
     user.refreshToken = refreshToken;
     await user.save();
+    console.log('User saved after refresh token');
 
     res.status(201).json({
       message: 'User registered successfully. Please verify your email.',
@@ -49,10 +60,13 @@ const register = async (req, res, next) => {
       },
     });
   } catch (error) {
+    console.error('=== REGISTER ERROR ===');
+    console.error('Name:', error.name);
+    console.error('Message:', error.message);
+    console.error('Stack:', error.stack);
     next(error);
   }
 };
-
 // @desc    Login user
 // @route   POST /api/auth/login
 const login = async (req, res, next) => {
