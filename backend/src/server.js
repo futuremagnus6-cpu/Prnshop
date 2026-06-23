@@ -40,6 +40,9 @@ const fundRequestRoutes = require('./routes/fundRequests');
 
 const app = express();
 
+// Trust Hostinger's reverse proxy (fixes express-rate-limit on shared hosting)
+app.set('trust proxy', 1);
+
 // Security middleware - Helmet with comprehensive CSP
 app.use(
   helmet({
@@ -181,6 +184,9 @@ const startServer = async () => {
   });
 };
 
-startServer().catch(console.error);
+// Only start server if this file is run directly, not imported
+if (require.main === module) {
+  startServer().catch(console.error);
+}
 
 module.exports = app;

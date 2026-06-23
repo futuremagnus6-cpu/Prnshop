@@ -931,13 +931,13 @@ const Home = () => {
               {/* Prandhara Story */}
               <div className="space-y-4 mb-8">
                 <p className="text-gray-600 leading-relaxed">
-                  Prandhara, established in 2022, is dedicated to promoting health and wellness through a range of Ayurvedic and herbal products. Inspired by the quality and wellness-focused approach of Riyansh products, Prandhara aims to provide natural solutions that support a healthier lifestyle.
+                  Pranndhara, established in 2022, is dedicated to promoting health and wellness through a range of Ayurvedic and herbal products. Inspired by the quality and wellness-focused approach of Riyansh products, Pranndhara aims to provide natural solutions that support a healthier lifestyle.
                 </p>
                 <p className="text-gray-600 leading-relaxed">
-                  The company focuses on offering carefully selected herbal, wellness, personal care, and health-support products designed to meet the needs of modern consumers. With a commitment to quality, authenticity, and customer satisfaction, Prandhara strives to make traditional Ayurvedic wisdom accessible to everyone.
+                  The company focuses on offering carefully selected herbal, wellness, personal care, and health-support products designed to meet the needs of modern consumers. With a commitment to quality, authenticity, and customer satisfaction, Pranndhara strives to make traditional Ayurvedic wisdom accessible to everyone.
                 </p>
                 <p className="text-gray-600 leading-relaxed">
-                  Driven by the vision of enhancing health and well-being, Prandhara continues to build trust among its customers by delivering reliable products and exceptional service while promoting a natural and holistic approach to everyday wellness.
+                  Driven by the vision of enhancing health and well-being, Pranndhara continues to build trust among its customers by delivering reliable products and exceptional service while promoting a natural and holistic approach to everyday wellness.
                 </p>
               </div>
 
@@ -1079,7 +1079,7 @@ const Home = () => {
               <FiBookOpen className="w-4 h-4" /> From Our Blog
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Health & Wellness Insights</h2>
-            <p className="text-gray-400 mt-3 max-w-xl mx-auto">Expert advice, Ayurvedic tips, and the latest from Prandhara</p>
+            <p className="text-gray-400 mt-3 max-w-xl mx-auto">Expert advice, Ayurvedic tips, and the latest from Pranndhara</p>
           </div>
 
           {blogs.length > 0 ? (
