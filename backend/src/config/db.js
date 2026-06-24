@@ -54,6 +54,15 @@ const setupConnectionHandlers = () => {
 };
 
 const attemptConnect = async () => {
+  // Force-reset the default connection if it's in a bad state
+  if (mongoose.connection.readyState !== 0) {
+    try {
+      await mongoose.disconnect();
+    } catch {
+      // Ignore disconnect errors
+    }
+  }
+
   const conn = await mongoose.connect(config.mongodbUri, {
     serverSelectionTimeoutMS: 15000,
     socketTimeoutMS: 45000,
