@@ -212,6 +212,18 @@ app.get('/api/health/db-test', async (_req, res) => {
   res.json(results);
 });
 
+// TEMPORARY DEBUG - remove after diagnosing user registration issue
+app.get('/api/debug/users', async (_req, res) => {
+  try {
+    const User = require('./models/User');
+    const count = await User.countDocuments();
+    const users = await User.find().select('email name role createdAt').limit(5);
+    res.json({ count, users, dbName: mongoose.connection.db?.databaseName });
+  } catch (err) {
+    res.status(500).json({ error: err.message, name: err.name, stack: err.stack });
+  }
+});
+
 // Monitoring routes (must be before 404 handler)
 app.use('/api/monitoring', monitoringRoutes);
 
