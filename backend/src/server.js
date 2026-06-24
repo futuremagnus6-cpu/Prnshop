@@ -146,8 +146,58 @@ app.get('/api/health', (_req, res) => {
     },
     env: {
       mongodbUriSet: !!process.env.MONGODB_URI,
+      port: process.env.PORT || 'not set',
     },
   });
+});
+
+// Diagnostic: test MongoDB connection on-demand (no auth required, but rate-limited)
+app.get('/api/health/db-test', async (_req, res) => {
+  const results = { dns: null, connect: null };
+
+  // Test DNS resolution
+  try {
+    const dns = require('node:dns/promises');
+    const addresses = await dns.resolve4('cluster0.fnmnt3g.mongodb.net');
+    results.dns = { ok: true, addresses };
+  } catch (dnsErr) {
+    results.dns = { ok: false, error: dnsErr.message, code: dnsErr.code };
+  }
+
+  // Test SRV lookup
+  try {
+    const dns = require('node:dns/promises');
+    const srvRecords = await dns.resolveSrv('_mongodb._tcp.cluster0.fnmnt3g.mongodb.net');
+    results.srv = { ok: true, records: srvRecords };
+  } catch (srvErr) {
+    results.srv = { ok: false, error: srvErr.message, code: srvErr.code };
+  }
+
+  // Test actual MongoDB connection
+  if (config.mongodbUri) {
+    try {
+      const testConn = await mongoose.createConnection(config.mongodbUri, {
+        serverSelectionTimeoutMS: 10000,
+      }).asPromise();
+      results.connect = {
+        ok: true,
+        host: testConn.host,
+        database: testConn.db?.databaseName,
+      };
+      await testConn.close();
+    } catch (connErr) {
+      results.connect = {
+        ok: false,
+        error: connErr.message,
+        code: connErr.code,
+        name: connErr.name,
+      };
+    }
+  } else {
+    results.connect = { ok: false, error: 'MONGODB_URI is not set' };
+  }
+
+  res.json(results);
 });
 
 // Monitoring routes (must be before 404 handler)
