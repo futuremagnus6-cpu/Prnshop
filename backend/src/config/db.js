@@ -32,11 +32,15 @@ const connectDB = async () => {
       logger.info('MongoDB reconnected');
     });
   } catch (error) {
-    logger.error('MongoDB initial connection failed', {
+    const safeUri = config.mongodbUri
+      ? config.mongodbUri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@')
+      : 'NOT SET';
+    logger.error('MongoDB connection failed', {
       error: error.message,
-      uri: config.mongodbUri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@'),
+      uri: safeUri,
     });
-    process.exit(1);
+    // Don't crash the server - allow it to run so health checks work
+    logger.warn('Server will continue without database connection');
   }
 };
 

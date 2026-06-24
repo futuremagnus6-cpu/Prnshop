@@ -144,6 +144,9 @@ app.get('/api/health', (_req, res) => {
       database: mongoState === 1 ? mongoose.connection.db?.databaseName : null,
       models: Object.keys(mongoose.models).length,
     },
+    env: {
+      mongodbUriSet: !!process.env.MONGODB_URI,
+    },
   });
 });
 
