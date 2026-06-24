@@ -11,6 +11,7 @@ const hpp = require('hpp');
 const compression = require('compression');
 const path = require('path');
 const responseTime = require('response-time');
+const mongoose = require('mongoose');
 
 const config = require('./config/env');
 const connectDB = require('./config/db');
@@ -129,9 +130,21 @@ app.use(
 // Static files
 app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
 
-// Health check - basic
+// Health check - includes MongoDB connection details
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  const mongoState = mongoose.connection.readyState;
+  const stateMap = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
+
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    mongodb: {
+      state: stateMap[mongoState] || 'unknown',
+      host: mongoState === 1 ? mongoose.connection.host : null,
+      database: mongoState === 1 ? mongoose.connection.db?.databaseName : null,
+      models: Object.keys(mongoose.models).length,
+    },
+  });
 });
 
 // Monitoring routes (must be before 404 handler)
