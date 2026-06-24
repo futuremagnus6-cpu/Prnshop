@@ -53,6 +53,19 @@ const setupConnectionHandlers = () => {
   mongoose.connection.on('reconnected', CONNECTION_EVENTS.reconnected);
 };
 
+const replaceDefaultConnection = (conn) => {
+  // Recompile all existing models on the new connection
+  const modelNames = Object.keys(mongoose.models);
+  for (const name of modelNames) {
+    const schema = mongoose.models[name].schema;
+    delete mongoose.models[name];
+    conn.model(name, schema);
+  }
+
+  // Replace the default connection so mongoose.model() and other references work
+  mongoose.connections[0] = conn;
+};
+
 const attemptConnect = async () => {
   // Use createConnection (proven to work from diagnostic tests) instead of mongoose.connect()
   // mongoose.connect() has issues with SRV DNS resolution in some environments
@@ -61,8 +74,7 @@ const attemptConnect = async () => {
     socketTimeoutMS: 45000,
   }).asPromise();
 
-  // Replace the default connection so mongoose.model() and other references work
-  mongoose.connections[0] = conn;
+  replaceDefaultConnection(conn);
 
   logger.info(`MongoDB connected: ${conn.host}`, {
     dbName: conn.db?.databaseName,
@@ -98,4 +110,4 @@ const connectDB = async () => {
   }
 };
 
-module.exports = connectDB;
+module.exports = { connectDB, replaceDefaultConnection };
