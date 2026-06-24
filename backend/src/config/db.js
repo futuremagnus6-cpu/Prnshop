@@ -53,31 +53,18 @@ const setupConnectionHandlers = () => {
   mongoose.connection.on('reconnected', CONNECTION_EVENTS.reconnected);
 };
 
-const replaceDefaultConnection = (conn) => {
-  // Recompile all existing models on the new connection
-  const modelNames = Object.keys(mongoose.models);
-  for (const name of modelNames) {
-    const schema = mongoose.models[name].schema;
-    delete mongoose.models[name];
-    conn.model(name, schema);
-  }
-
-  // Replace the default connection so mongoose.model() and other references work
-  mongoose.connections[0] = conn;
-};
-
 const attemptConnect = async () => {
-  // Use createConnection (proven to work from diagnostic tests) instead of mongoose.connect()
-  // mongoose.connect() has issues with SRV DNS resolution in some environments
-  const conn = await mongoose.createConnection(config.mongodbUri, {
+  // Use mongoose.connect() to connect the DEFAULT connection.
+  // This is critical: all models are registered via mongoose.model() at require() time,
+  // which binds them to the default connection. Using createConnection() creates a
+  // separate connection that cached model references in controllers won't use.
+  await mongoose.connect(config.mongodbUri, {
     serverSelectionTimeoutMS: 15000,
     socketTimeoutMS: 45000,
-  }).asPromise();
+  });
 
-  replaceDefaultConnection(conn);
-
-  logger.info(`MongoDB connected: ${conn.host}`, {
-    dbName: conn.db?.databaseName,
+  logger.info(`MongoDB connected: ${mongoose.connection.host}`, {
+    dbName: mongoose.connection.db?.databaseName,
   });
 
   // Clear reconnect interval once connected
@@ -110,4 +97,4 @@ const connectDB = async () => {
   }
 };
 
-module.exports = { connectDB, replaceDefaultConnection };
+module.exports = { connectDB };

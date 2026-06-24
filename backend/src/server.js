@@ -14,7 +14,7 @@ const responseTime = require('response-time');
 const mongoose = require('mongoose');
 
 const config = require('./config/env');
-const { connectDB, replaceDefaultConnection } = require('./config/db');
+const { connectDB } = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
 const { performanceMonitor } = require('./middleware/monitor');
@@ -135,14 +135,12 @@ app.get('/api/health', async (_req, res) => {
   let mongoState = mongoose.connection.readyState;
   const stateMap = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
 
-  // If disconnected, try to connect on-the-fly using createConnection (proven to work)
+  // If disconnected, try to connect on-the-fly using mongoose.connect()
   if (mongoState === 0 && config.mongodbUri) {
     try {
-      const conn = await mongoose.createConnection(config.mongodbUri, {
+      await mongoose.connect(config.mongodbUri, {
         serverSelectionTimeoutMS: 10000,
-      }).asPromise();
-
-      replaceDefaultConnection(conn);
+      });
       mongoState = 1;
     } catch {
       // Connection attempt failed, state remains disconnected
