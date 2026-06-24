@@ -77,13 +77,14 @@ const attemptConnect = async () => {
 const connectDB = async () => {
   if (!config.mongodbUri) {
     logger.warn('MONGODB_URI is not set. Server will start without database.');
-    return;
+    return false;
   }
 
   setupConnectionHandlers();
 
   try {
     await attemptConnect();
+    return true;
   } catch (error) {
     const safeUri = config.mongodbUri
       ? config.mongodbUri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@')
@@ -94,6 +95,7 @@ const connectDB = async () => {
     });
     logger.warn('Starting background retry every 15 seconds...');
     startBackgroundRetry();
+    return false;
   }
 };
 

@@ -212,18 +212,6 @@ app.get('/api/health/db-test', async (_req, res) => {
   res.json(results);
 });
 
-// TEMPORARY DEBUG - remove after diagnosing user registration issue
-app.get('/api/debug/users', async (_req, res) => {
-  try {
-    const User = require('./models/User');
-    const count = await User.countDocuments();
-    const users = await User.find().select('email name role createdAt').limit(5);
-    res.json({ count, users, dbName: mongoose.connection.db?.databaseName });
-  } catch (err) {
-    res.status(500).json({ error: err.message, name: err.name, stack: err.stack });
-  }
-});
-
 // Monitoring routes (must be before 404 handler)
 app.use('/api/monitoring', monitoringRoutes);
 
@@ -266,15 +254,26 @@ app.use((_req, res) => {
 // Error handler
 app.use(errorHandler);
 
-// Start server (don't block on MongoDB - connect in background)
+// Start server - wait for initial MongoDB connection before accepting requests
 const startServer = async () => {
-  // Start HTTP server immediately
+  // Try to connect to MongoDB first with a 30-second timeout
+  // This prevents buffering timeouts on initial requests and ensures all
+  // PM2 cluster processes are connected before accepting traffic.
+  const connected = await Promise.race([
+    connectDB().then(() => true),
+    new Promise((resolve) => setTimeout(() => resolve(false), 30000)),
+  ]);
+
+  if (!connected) {
+    console.warn(
+      'MongoDB could not connect within 30s. Starting server anyway with background retry...'
+    );
+    // connectDB() has already started background retry internally
+  }
+
   app.listen(config.port, () => {
     console.log(`Prandhara ERP Server running on port ${config.port} in ${config.nodeEnv} mode`);
   });
-
-  // Connect to MongoDB in background (retries automatically on failure)
-  connectDB().catch(console.error);
 };
 
 // Only start server if this file is run directly, not imported
