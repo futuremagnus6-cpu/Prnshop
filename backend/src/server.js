@@ -242,12 +242,15 @@ app.use((_req, res) => {
 // Error handler
 app.use(errorHandler);
 
-// Start server
+// Start server (don't block on MongoDB - connect in background)
 const startServer = async () => {
-  await connectDB();
+  // Start HTTP server immediately
   app.listen(config.port, () => {
     console.log(`Prandhara ERP Server running on port ${config.port} in ${config.nodeEnv} mode`);
   });
+
+  // Connect to MongoDB in background (retries automatically on failure)
+  connectDB().catch(console.error);
 };
 
 // Only start server if this file is run directly, not imported

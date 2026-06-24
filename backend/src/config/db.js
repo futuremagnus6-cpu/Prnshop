@@ -54,23 +54,18 @@ const setupConnectionHandlers = () => {
 };
 
 const attemptConnect = async () => {
-  // Force-reset the default connection if it's in a bad state
-  if (mongoose.connection.readyState !== 0) {
-    try {
-      await mongoose.disconnect();
-    } catch {
-      // Ignore disconnect errors
-    }
-  }
-
-  const conn = await mongoose.connect(config.mongodbUri, {
+  // Use createConnection (proven to work from diagnostic tests) instead of mongoose.connect()
+  // mongoose.connect() has issues with SRV DNS resolution in some environments
+  const conn = await mongoose.createConnection(config.mongodbUri, {
     serverSelectionTimeoutMS: 15000,
     socketTimeoutMS: 45000,
-  });
+  }).asPromise();
 
-  logger.info(`MongoDB connected: ${conn.connection.host}`, {
-    dbName: conn.connection.db?.databaseName,
-    models: Object.keys(conn.models).length,
+  // Replace the default connection so mongoose.model() and other references work
+  mongoose.connections[0] = conn;
+
+  logger.info(`MongoDB connected: ${conn.host}`, {
+    dbName: conn.db?.databaseName,
   });
 
   // Clear reconnect interval once connected
