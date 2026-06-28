@@ -1,6 +1,7 @@
 {
-  "devDependencies": {
-   
+  "scripts": {
+    "build": "cd backend && npm install",
+    "start": "node backend/src/server.js"
   }
+  
 }
-
