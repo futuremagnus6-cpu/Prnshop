@@ -1,0 +1,1 @@
+import{an as a}from"./index-1fPaIEG3.js";const s={getAll:e=>a.get("/categories",{params:e}).then(t=>t.data),getById:e=>a.get(`/categories/${e}`).then(t=>t.data),create:e=>a.post("/categories",e).then(t=>t.data),update:(e,t)=>a.put(`/categories/${e}`,t).then(o=>o.data),delete:e=>a.delete(`/categories/${e}`).then(t=>t.data)},g=s;export{s as a,g as c};
