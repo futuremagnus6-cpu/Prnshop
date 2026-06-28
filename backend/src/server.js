@@ -150,6 +150,14 @@ app.use('/api/earnings', earningsRoutes);
 app.use('/api/store-settings', storeSettingsRoutes);
 app.use('/api/fund-requests', fundRequestRoutes);
 
+// Serve Frontend Static Files
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Catch-all for React Router
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+});
+
 // 404 handler
 app.use((_req, res) => {
   res.status(404).json({ message: 'Route not found.' });
