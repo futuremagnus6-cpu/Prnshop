@@ -167,6 +167,7 @@ app.use((_req, res) => {
 app.use(errorHandler);
 
 // Start server
+if (require.main === module) {
 const startServer = async () => {
   await connectDB();
   app.listen(config.port, () => {
@@ -175,5 +176,5 @@ const startServer = async () => {
 };
 
 startServer().catch(console.error);
-
+}
 module.exports = app;

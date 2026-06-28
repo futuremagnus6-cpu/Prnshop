@@ -67,7 +67,6 @@ const fundRequestSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-fundRequestSchema.index({ requestId: 1 });
 fundRequestSchema.index({ status: 1, createdAt: -1 });
 fundRequestSchema.index({ companyName: 'text', requestTitle: 'text' });
 
