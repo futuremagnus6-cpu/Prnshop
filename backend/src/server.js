@@ -132,6 +132,13 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/monitoring', monitoringRoutes);
 
 // API Routes
+app.get('/api/envtest', (req, res) => {
+  res.json({
+    mongoUri: process.env.MONGODB_URI ? 'SET' : 'NOT SET',
+    nodeEnv: process.env.NODE_ENV,
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
