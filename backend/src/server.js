@@ -133,9 +133,13 @@ app.use('/api/monitoring', monitoringRoutes);
 
 // API Routes
 app.get('/api/envtest', (req, res) => {
+  const uri = process.env.MONGODB_URI || 'NOT SET';
   res.json({
-    mongoUri: process.env.MONGODB_URI ? 'SET' : 'NOT SET',
+    mongoUri: uri ? 'SET' : 'NOT SET',
+    uriPreview: uri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@'), // hides password
     nodeEnv: process.env.NODE_ENV,
+    mongooseState: require('mongoose').connection.readyState,
+    // 0=disconnected, 1=connected, 2=connecting, 3=disconnecting
   });
 });
 
