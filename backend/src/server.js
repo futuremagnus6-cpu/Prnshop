@@ -132,14 +132,28 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/monitoring', monitoringRoutes);
 
 // API Routes
-app.get('/api/envtest', (req, res) => {
-  const uri = process.env.MONGODB_URI || 'NOT SET';
+app.get('/api/envtest', async (req, res) => {
+  const mongoose = require('mongoose');
+  const uri = process.env.MONGODB_URI;
+  
+  try {
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(uri, {
+        serverSelectionTimeoutMS: 10000,
+        connectTimeoutMS: 10000,
+      });
+    }
+  } catch (err) {
+    return res.json({
+      mongooseState: mongoose.connection.readyState,
+      error: err.message,
+      uri: uri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@'),
+    });
+  }
+
   res.json({
-    mongoUri: uri ? 'SET' : 'NOT SET',
-    uriPreview: uri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@'), // hides password
-    nodeEnv: process.env.NODE_ENV,
-    mongooseState: require('mongoose').connection.readyState,
-    // 0=disconnected, 1=connected, 2=connecting, 3=disconnecting
+    mongooseState: mongoose.connection.readyState,
+    host: mongoose.connection.host,
   });
 });
 
