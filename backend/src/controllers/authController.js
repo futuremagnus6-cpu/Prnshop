@@ -49,7 +49,11 @@ const register = async (req, res, next) => {
       },
     });
   } catch (error) {
-    next(error);
+    console.error('REGISTER ERROR:', error.message);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error.message
+    });
   }
 };
 
