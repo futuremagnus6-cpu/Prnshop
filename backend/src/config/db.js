@@ -9,9 +9,9 @@ mongoose.plugin(mongooseQueryLogger);
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(config.mongodbUri, {
-      serverSelectionTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
-      connectTimeoutMS: 30000,
+      serverSelectionTimeoutMS: 100000,
+      socketTimeoutMS: 100000,
+      connectTimeoutMS: 100000,
     });
 
     logger.info(`MongoDB connected: ${conn.connection.host}`, {
